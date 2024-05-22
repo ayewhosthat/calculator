@@ -1,0 +1,60 @@
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.calc-container {
+    display: flex;
+    flex-direction: column;
+    width: 400px;
+    height: 500px;
+}
+
+.row {
+    display: flex;
+    flex: 1;
+}
+
+.number {
+    background-color: grey;
+    color: white;
+}
+
+.operator, .utility {
+    background-color: rgb(156, 128, 233);
+    color: black;
+}
+
+.long {
+    display: flex;
+    flex: 2;
+    justify-content: stretch;
+}
+
+.reg {
+    display: flex;
+    flex: 1;
+}
+
+.display {
+    width: auto;
+    height: 36px;
+    background-color: rgb(75, 9, 9);
+    color: white;
+    font-size: 36px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 16px 16px 16px 16px;
+}
+
+button {
+    width: 100%;
+    height: auto;
+    font-size: 24px;
+    font-weight: bold;
+    border: 2px solid black;
+}
+
