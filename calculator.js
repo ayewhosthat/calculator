@@ -24,9 +24,25 @@ const operate = (operator, num1, num2) => {
 }
 
 // create event listener for number keys that will populate the display
-const addNumberBehaviour = function() {
-    const display = document.querySelector('.display');
-    const currNumber = display.textContent;
-    const numbers = document.querySelectorAll('.number')
-    console.log(numbers);
+const display = document.querySelector('.display');
+let currNumber = display.textContent;
+const numbers = document.querySelectorAll('.number')
+for (let i = 0; i < numbers.length; i++) {
+    const btn = numbers[i];
+    btn.addEventListener('click', () => {
+        if (currNumber === '0') {
+            currNumber = btn.textContent;
+        } else {
+            currNumber = currNumber + btn.textContent;
+        }
+        display.textContent = currNumber;
+    }
+    );
 }
+
+// add event listener to AC key which resets the display to 0 and loses all memory
+const allClear = document.querySelector('#clear-button');
+allClear.addEventListener('click', () => {
+    currNumber = '0'
+    display.textContent = currNumber;
+})
