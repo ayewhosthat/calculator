@@ -1,10 +1,28 @@
+// declare global variables to be used when evaluating 
+let usedOperator = true;
+let expression = '';
+const display = document.querySelector('.display');
+let enteredFirstNumber = false;
+let newNumber = false;
+
 const add = (a,b) => {return a+b};
 const subtract = (a,b) => {return a-b};
-const mulitply = (a,b) => {return a*b};
+const multiply = (a,b) => {return a*b};
 const divide = (a,b) => {return a/b};
 
 const extractOperationParts = function(operation) {
-    operation = operation.replace(' ', '').split('');
+    let num1;
+    let num2;
+    let op;
+    for (let k = 0; k < operation.length; k++) {
+        let char = operation[k];
+        if (['*', '/', '+', '-'].includes(char)) {
+            op = char;
+            const index = operation.indexOf(char);
+            num1 = operation.slice(0, index);
+            num2 = operation.slice(index+1);
+        }
+    }
     // create new object with keys num1, operator, num2
     const operationInfo = {
         'num1': operation[0],
@@ -15,34 +33,66 @@ const extractOperationParts = function(operation) {
 };
 
 const operate = (operator, num1, num2) => {
+    num1 = parseInt(num1);
+    num2 = parseInt(num2);
     switch (operator) {
         case '+': return add(num1, num2);
         case '-': return subtract(num1, num2);
-        case '*': return mulitply(num1, num2);
+        case '*': return multiply(num1, num2);
         case '/': return divide(num1, num2);
     }
 }
 
-// create event listener for number keys that will populate the display
-const display = document.querySelector('.display');
-let currNumber = display.textContent;
-const numbers = document.querySelectorAll('.number')
+const numbers = document.querySelectorAll('.number');
 for (let i = 0; i < numbers.length; i++) {
-    const btn = numbers[i];
-    btn.addEventListener('click', () => {
-        if (currNumber === '0') {
-            currNumber = btn.textContent;
-        } else {
-            currNumber = currNumber + btn.textContent;
+    let num = numbers[i];
+    num.addEventListener('click', () => {
+        if (!enteredFirstNumber || newNumber) {
+            display.textContent = num.textContent;
+            enteredFirstNumber = true;
+            newNumber = false;
+        } else if (enteredFirstNumber) {
+            // first number already entered
+            display.textContent = display.textContent + num.textContent;
         }
-        display.textContent = currNumber;
-    }
-    );
+        expression = expression + num.textContent;
+    });
 }
 
 // add event listener to AC key which resets the display to 0 and loses all memory
 const allClear = document.querySelector('#clear-button');
 allClear.addEventListener('click', () => {
-    currNumber = '0'
-    display.textContent = currNumber;
+    enteredFirstNumber = false;
+    expression = '';
+    display.textContent = '0';
+    newNumber = false;
 })
+
+// add event listener for operations
+const ops = document.querySelectorAll('.operator');
+for (let i = 0; i < ops.length; i++) {
+    op = ops[i];
+    op.addEventListener('click', () => {
+        if (!usedOperator) {
+            // if we have not inputted a second operator we can add the symbol to the expression as 
+            // if we have, then we must evaluate the lhs of the operator
+            let expr = extractOperationParts(expression);
+        let result = operate(expr['operator'], expr['num1'], expr['num2']);
+        display.textContent = result;
+        }
+        console.log(op.textContent);
+        usedOperator = !usedOperator;
+        expression = expression + op.textContent;
+        newNumber = true;
+    })
+}
+
+// add event listener for equals sign
+const equals = document.querySelector('.equals');
+equals.addEventListener('click', () => {
+    let expr = extractOperationParts(expression);
+    let result = operate(expr['operator'], expr['num1'], expr['num2']);
+    display.textContent = result;
+    usedOperator = false;
+    newNumber = false;
+});
