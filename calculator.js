@@ -71,7 +71,7 @@ allClear.addEventListener('click', () => {
 // add event listener for operations
 const ops = document.querySelectorAll('.operator');
 for (let i = 0; i < ops.length; i++) {
-    op = ops[i];
+    let op = ops[i];
     op.addEventListener('click', () => {
         if (!usedOperator) {
             // if we have not inputted a second operator we can add the symbol to the expression as 
