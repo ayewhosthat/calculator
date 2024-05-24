@@ -19,15 +19,15 @@ const extractOperationParts = function(operation) {
         if (['*', '/', '+', '-'].includes(char)) {
             op = char;
             const index = operation.indexOf(char);
-            num1 = operation.slice(0, index);
+            num1 = operation.slice(0,index);
             num2 = operation.slice(index+1);
         }
     }
     // create new object with keys num1, operator, num2
     const operationInfo = {
-        'num1': operation[0],
-        'operator': operation[1],
-        'num2': operation[2],
+        'num1': num1,
+        'operator': op,
+        'num2': num2,
     };
     return operationInfo;
 };
@@ -45,6 +45,7 @@ const operate = (operator, num1, num2) => {
 
 const numbers = document.querySelectorAll('.number');
 for (let i = 0; i < numbers.length; i++) {
+    let expr = extractOperationParts(expression);
     let num = numbers[i];
     num.addEventListener('click', () => {
         if (!enteredFirstNumber || newNumber) {
@@ -94,5 +95,5 @@ equals.addEventListener('click', () => {
     let result = operate(expr['operator'], expr['num1'], expr['num2']);
     display.textContent = result;
     usedOperator = false;
-    newNumber = false;
+    newNumber = true;
 });
