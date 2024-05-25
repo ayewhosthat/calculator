@@ -33,8 +33,8 @@ const extractOperationParts = function(operation) {
 };
 
 const operate = (operator, num1, num2) => {
-    num1 = parseInt(num1);
-    num2 = parseInt(num2);
+    num1 = parseFloat(num1);
+    num2 = parseFloat(num2);
     switch (operator) {
         case '+': return add(num1, num2);
         case '-': return subtract(num1, num2);
@@ -74,14 +74,15 @@ const ops = document.querySelectorAll('.operator');
 for (let i = 0; i < ops.length; i++) {
     let op = ops[i];
     op.addEventListener('click', () => {
+        console.log(expression);
+        console.log(usedOperator);
         if (!usedOperator) {
             // if we have not inputted a second operator we can add the symbol to the expression as 
             // if we have, then we must evaluate the lhs of the operator
             let expr = extractOperationParts(expression);
-        let result = operate(expr['operator'], expr['num1'], expr['num2']);
-        display.textContent = result;
+            let result = operate(expr['operator'], expr['num1'], expr['num2']);
+            display.textContent = result;
         }
-        console.log(op.textContent);
         usedOperator = !usedOperator;
         expression = expression + op.textContent;
         newNumber = true;
@@ -96,4 +97,5 @@ equals.addEventListener('click', () => {
     display.textContent = result;
     usedOperator = false;
     newNumber = true;
+    expression = result;
 });
