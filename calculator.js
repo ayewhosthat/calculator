@@ -4,11 +4,26 @@ let expression = '';
 const display = document.querySelector('.display');
 let enteredFirstNumber = false;
 let newNumber = false;
+const OPS = ['*', '/', '+', '-', '='];
 
 const add = (a,b) => {return a+b};
 const subtract = (a,b) => {return a-b};
 const multiply = (a,b) => {return a*b};
 const divide = (a,b) => {return a/b};
+
+const truncateDisplay = function() {
+    if (display.textContent.length > 18) {
+        display.textContent = display.textContent.slice(0,18);
+    }
+}
+
+const resetDisplay = () => {
+    enteredFirstNumber = false;
+    expression = '';
+    display.textContent = '0';
+    newNumber = false;
+    usedOperator = true;
+}
 
 const extractOperationParts = function(operation) {
     let num1;
@@ -16,7 +31,7 @@ const extractOperationParts = function(operation) {
     let op;
     for (let k = 0; k < operation.length; k++) {
         let char = operation[k];
-        if (['*', '/', '+', '-'].includes(char)) {
+        if (OPS.includes(char)) {
             op = char;
             const index = operation.indexOf(char);
             num1 = operation.slice(0,index);
@@ -31,6 +46,14 @@ const extractOperationParts = function(operation) {
     };
     return operationInfo;
 };
+
+const checkConsecutiveOperators = function(expression) {
+    const condition1 = OPS.includes(expression.slice(-1)) && OPS.includes(expression.slice(-2,-1))
+    const condition2 = expression.length === 1 && OPS.includes(expression);
+    if (condition1 || condition2) {
+        resetDisplay();
+    }
+}
 
 const operate = (operator, num1, num2) => {
     num1 = parseFloat(num1);
@@ -56,35 +79,31 @@ for (let i = 0; i < numbers.length; i++) {
             // first number already entered
             display.textContent = display.textContent + num.textContent;
         }
+        truncateDisplay();
         expression = expression + num.textContent;
     });
 }
 
 // add event listener to AC key which resets the display to 0 and loses all memory
 const allClear = document.querySelector('#clear-button');
-allClear.addEventListener('click', () => {
-    enteredFirstNumber = false;
-    expression = '';
-    display.textContent = '0';
-    newNumber = false;
-})
+allClear.addEventListener('click', resetDisplay);
 
 // add event listener for operations
 const ops = document.querySelectorAll('.operator');
 for (let i = 0; i < ops.length; i++) {
     let op = ops[i];
     op.addEventListener('click', () => {
-        console.log(expression);
-        console.log(usedOperator);
         if (!usedOperator) {
             // if we have not inputted a second operator we can add the symbol to the expression as 
             // if we have, then we must evaluate the lhs of the operator
             let expr = extractOperationParts(expression);
             let result = operate(expr['operator'], expr['num1'], expr['num2']);
             display.textContent = result;
+            truncateDisplay();
         }
         usedOperator = !usedOperator;
         expression = expression + op.textContent;
+        checkConsecutiveOperators(expression);
         newNumber = true;
     })
 }
@@ -95,6 +114,7 @@ equals.addEventListener('click', () => {
     let expr = extractOperationParts(expression);
     let result = operate(expr['operator'], expr['num1'], expr['num2']);
     display.textContent = result;
+    truncateDisplay();
     usedOperator = false;
     newNumber = true;
     expression = result;
