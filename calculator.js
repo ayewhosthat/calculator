@@ -119,3 +119,24 @@ equals.addEventListener('click', () => {
     newNumber = true;
     expression = result;
 });
+
+const backspace = document.querySelector('#backspace');
+backspace.addEventListener('click', () => {
+    if (!OPS.includes(expression.slice(-1))) {
+        // last character of expression is a number
+        if (expression.length === 1) {
+            resetDisplay();
+        } else {
+        display.textContent = display.textContent.slice(0,-1);
+        expression = expression.slice(0,-1);
+        }
+    }
+});
+
+const decimal = document.querySelector('#decimal-point');
+decimal.addEventListener('click', () => {
+    if (!display.textContent.includes('.')) {
+        expression = expression + decimal.textContent;
+        display.textContent = display.textContent + decimal.textContent;
+    }
+})
