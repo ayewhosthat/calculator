@@ -1,5 +1,5 @@
 // declare global variables to be used when evaluating 
-let usedOperator = true;
+let usedOperator = 0;
 let expression = '';
 const display = document.querySelector('.display');
 let enteredFirstNumber = false;
@@ -29,7 +29,7 @@ const resetDisplay = () => {
     expression = '';
     display.textContent = '0';
     newNumber = false;
-    usedOperator = true;
+    usedOperator = 0;
 }
 
 const extractOperationParts = function(operation) {
@@ -100,15 +100,18 @@ const ops = document.querySelectorAll('.operator');
 for (let i = 0; i < ops.length; i++) {
     let op = ops[i];
     op.addEventListener('click', () => {
-        if (!usedOperator) {
+        usedOperator += 1;
+        console.log(expression);
+        if (usedOperator === 2) {
             // if we have not inputted a second operator we can add the symbol to the expression as 
             // if we have, then we must evaluate the lhs of the operator
             let expr = extractOperationParts(expression);
             let result = operate(expr['operator'], expr['num1'], expr['num2']);
+            usedOperator -= 1;
+            expression = result;
             display.textContent = result;
             truncateDisplay();
         }
-        usedOperator = !usedOperator;
         expression = expression + op.textContent;
         checkConsecutiveOperators(expression);
         newNumber = true;
@@ -122,7 +125,7 @@ equals.addEventListener('click', () => {
     let result = operate(expr['operator'], expr['num1'], expr['num2']);
     display.textContent = result;
     truncateDisplay();
-    usedOperator = false;
+    usedOperator = 0;
     newNumber = true;
     expression = result;
 });
